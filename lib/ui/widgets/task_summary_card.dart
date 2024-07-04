@@ -14,7 +14,7 @@ class TaskSummaryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       color: Colors.white,
-      elevation: 3,
+      elevation: 2,
       child: Padding(
         padding: const EdgeInsets.all(15.0),
         child: Column(

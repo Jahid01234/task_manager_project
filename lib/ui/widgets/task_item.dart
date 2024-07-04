@@ -24,11 +24,28 @@ class _TaskItemState extends State<TaskItem> {
     bool _updateStatusInProgress = false;
     String? _selectedStatus;
 
+    Color getStatusColor(String? status) {
+      switch (status) {
+        case 'Progress':
+          return Colors.teal;
+        case 'Completed':
+          return Colors.cyan;
+        case 'Cancelled':
+          return Colors.deepOrange;
+        default:
+          return Colors.pinkAccent;
+      }
+    }
+
+
   @override
   Widget build(BuildContext context) {
     return Card(
       color: Colors.white,
-      elevation: 3,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(5),
+      ),
+      elevation: 1,
       child: ListTile(
         title:  Text(widget.taskModel.title ?? '',
           style: const TextStyle(
@@ -44,6 +61,7 @@ class _TaskItemState extends State<TaskItem> {
                 style: Theme.of(context).textTheme.titleSmall,
               textAlign: TextAlign.justify,
             ),
+             const SizedBox(height: 2),
              Text(
               "Date :${widget.taskModel.createdDate ?? ''}",
               style: const TextStyle(
@@ -58,9 +76,9 @@ class _TaskItemState extends State<TaskItem> {
                   label:  Text(widget.taskModel.status ?? 'New',
                     style: const TextStyle(color: Colors.white),
                   ),
-                  backgroundColor: Colors.cyan,
+                  backgroundColor:  getStatusColor(widget.taskModel.status),
                   padding: const EdgeInsets.symmetric(
-                      horizontal: 15,
+                      horizontal: 5,
                       vertical: 2
                   ),
                   shape: RoundedRectangleBorder(
@@ -96,7 +114,6 @@ class _TaskItemState extends State<TaskItem> {
                     )
                   ],
                 )
-
               ],
             )
           ],
