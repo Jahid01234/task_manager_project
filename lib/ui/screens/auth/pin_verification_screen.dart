@@ -20,6 +20,7 @@ class PinVerificationScreen extends StatefulWidget {
 
 class _PinVerificationScreenState extends State<PinVerificationScreen> {
   final TextEditingController _pinTEController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _pinVerificationInProgress = false;
 
   @override
@@ -30,36 +31,40 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
           child: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(24.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 100),
-                  Text(
-                    "Pin Verification",
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                  const SizedBox(height: 5),
-                  Text(
-                    "A 6 digits verification pin has been sent to your email address.",
-                    style: Theme.of(context).textTheme.titleSmall,textAlign: TextAlign.justify,
-                  ),
-                  const SizedBox(height: 25),
-                  // Pin Text Field
-                  _buildPinCodeTextField(),
-                  const SizedBox(height: 15),
-                  Visibility(
-                    visible: _pinVerificationInProgress == false,
-                    replacement: const Center(
-                      child: CircularProgressIndicator(),
+              child: Form(
+                key: _formKey,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 100),
+                    Text(
+                      "Pin Verification",
+                      style: Theme.of(context).textTheme.titleLarge,
                     ),
-                    child: ElevatedButton(
-                      onPressed: _onTapVerifyOtpButton,
-                      child: const Text("Verify"),
+                    const SizedBox(height: 5),
+                    Text(
+                      "A 6 digits verification pin has been sent to your email address.",
+                      style: Theme.of(context).textTheme.titleSmall,textAlign: TextAlign.justify,
                     ),
-                  ),
-                  const SizedBox(height: 40),
-                  _buildSignInSection(),
-                ],
+                    const SizedBox(height: 25),
+                    // Pin Text Field
+                    _buildPinCodeTextField(),
+                    const SizedBox(height: 15),
+                    Visibility(
+                      visible: _pinVerificationInProgress == false,
+                      replacement: const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                      child: ElevatedButton(
+                        onPressed: _onTapVerifyOtpButton,
+                        child: const Text("Verify"),
+                      ),
+                    ),
+                    const SizedBox(height: 40),
+                    _buildSignInSection(),
+                  ],
+                ),
               ),
             ),
           ),
@@ -114,6 +119,18 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
       controller: _pinTEController,
       keyboardType: TextInputType.number,
       appContext: context,
+      validator: (String? value) {
+        if (value == null || value.isEmpty) {
+          return 'Please enter a PIN code';
+        }
+        if (value.length != 6) {
+          return 'PIN code must be 6 digits';
+        }
+        if (!RegExp(r'^\d+$').hasMatch(value)) {
+          return 'PIN code must contain only digits';
+        }
+        return null;
+      }
     );
   }
 
@@ -127,9 +144,12 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
 
 
   void _onTapVerifyOtpButton() {
-    _pinVerification();
+    if(_formKey.currentState!.validate()){
+      _pinVerification();
+    }
   }
 
+  // pin verification api method
   Future<void> _pinVerification() async {
     _pinVerificationInProgress = true;
     if(mounted){
@@ -137,19 +157,22 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
     }
 
     NetworkResponse response = await NetworkCaller.getRequest(
-
       Urls.recoverVerifyOTP( widget.email, _pinTEController.text),
     );
 
     if (response.isSuccess) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) =>  ResetPasswordScreen(
-          email:widget.email ,
-          otp:_pinTEController.text,
-        ),
-        ),
-      );
+
+      if(mounted) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) =>
+              ResetPasswordScreen(
+                email: widget.email,
+                otp: _pinTEController.text,
+              ),
+          ),
+        );
+      }
     } else {
       if(mounted){
         showSnackBarMessage(context, response.errorMessage ?? 'Failed to send verification pin.');

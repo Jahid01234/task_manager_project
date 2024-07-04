@@ -1,9 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:task_manager_project/data/models/network_response.dart';
 import 'package:task_manager_project/data/models/user_model.dart';
@@ -230,7 +227,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   Future<void> _pickProfileImage()async{
      final imagePicker = ImagePicker();
      final XFile? result = await imagePicker.pickImage(
-       source: ImageSource.camera,
+       source: ImageSource.gallery,
      );
      if (result != null) {
        _selectedImage = result;

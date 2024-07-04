@@ -24,6 +24,7 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController _passwordTEController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _signInApiInProgress = false;
+  bool _showPassword = false;
 
   @override
   Widget build(BuildContext context) {
@@ -62,10 +63,25 @@ class _SignInScreenState extends State<SignInScreen> {
                     ),
                     const SizedBox(height: 8),
                     TextFormField(
-                      obscureText: false,
+                      obscureText: _showPassword==false,
                       controller: _passwordTEController,
                       keyboardType: TextInputType.text,
-                      decoration: const InputDecoration(hintText: 'Password'),
+                      decoration: InputDecoration(
+                        hintText: 'Password',
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _showPassword?Icons.visibility:Icons.visibility_off,
+                            color: Colors.cyan,
+                          ),
+                          onPressed: (){
+                            _showPassword = !_showPassword;
+                            if(mounted){
+                              setState(() {});
+                            }
+                          },
+
+                        ),
+                      ),
                       validator: (String? value){
                         if(value==null || value.isEmpty){
                           return "Please enter your password";
@@ -156,6 +172,7 @@ class _SignInScreenState extends State<SignInScreen> {
       setState(() {});
     }
     if (response.isSuccess) {
+
        LoginModel loginModel = LoginModel.fromJson(response.responseData);
       await AuthController.saveUserAccessToken(loginModel.token!);
       await AuthController.saveUserData(loginModel.userModel!);

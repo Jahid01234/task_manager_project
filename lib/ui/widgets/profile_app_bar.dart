@@ -69,7 +69,7 @@ AppBar profileAppBar(context, [bool fromUpdateProfile = false]) {
                 (route) => false,
           );
         },
-        icon: const Icon(Icons.logout),
+        icon: const Icon(Icons.logout,color: Colors.white, ),
       )
     ],
   );
