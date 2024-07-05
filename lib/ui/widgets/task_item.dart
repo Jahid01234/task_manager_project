@@ -109,7 +109,7 @@ class _TaskItemState extends State<TaskItem> {
                         onPressed: (){
                           _deleteTask();
                         },
-                        icon: const Icon(Icons.delete_outline_outlined,color: Colors.deepOrange),
+                        icon: const Icon(Icons.delete,color: Colors.deepOrange),
                       ),
                     )
                   ],
