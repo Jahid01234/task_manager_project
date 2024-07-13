@@ -25,6 +25,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: BackgroundWidget(
         child: SafeArea(
           child: SingleChildScrollView(
@@ -120,6 +121,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
   void _onTapConfirmButton() {
     if(_formKey.currentState!.validate()){
       _emailVerification();
+     // _verifyEmail(_emailTEController.text);
     }
   }
 
@@ -134,7 +136,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
       Urls.recoverVerifyEmail(_emailTEController.text),
     );
 
-    if (response.isSuccess) {
+    if (response.isSuccess && response.responseData['status'] == 'success') {
       if(mounted) {
         Navigator.push(
           context,
@@ -153,6 +155,34 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
       setState(() {});
     }
   }
+
+  // Future<void> _verifyEmail(String email) async {
+  //   _emailVerificationInProgress = true;
+  //   if (mounted) {
+  //     setState(() {});
+  //   }
+  //   NetworkResponse response =
+  //   await NetworkCaller.getRequest(Urls.recoverVerifyEmail(email));
+  //   _emailVerificationInProgress = false;
+  //   if (mounted) {
+  //     setState(() {});
+  //   }
+  //   if (response.isSuccess && response.responseData['status'] == 'success') {
+  //     if (mounted) {
+  //       Navigator.push(
+  //         context,
+  //         MaterialPageRoute(
+  //           builder: (context) => PinVerificationScreen(email: email),
+  //         ),
+  //       );
+  //     }
+  //   } else {
+  //     if (mounted) {
+  //       showSnackBarMessage(context,
+  //           response.errorMessage ?? 'Email verification failed! Try again');
+  //     }
+  //   }
+  // }
 
   @override
   void dispose() {

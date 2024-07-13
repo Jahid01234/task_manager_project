@@ -7,6 +7,7 @@ import 'package:task_manager_project/data/models/user_model.dart';
 import 'package:task_manager_project/data/network_caller/network_caller.dart';
 import 'package:task_manager_project/data/utilities/urls.dart';
 import 'package:task_manager_project/ui/controllers/auth_controller.dart';
+import 'package:task_manager_project/ui/screens/main_bottom_nav_screen.dart';
 import 'package:task_manager_project/ui/widgets/background_widget.dart';
 import 'package:task_manager_project/ui/widgets/profile_app_bar.dart';
 import 'package:task_manager_project/ui/widgets/snack_bar_message.dart';
@@ -44,6 +45,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: profileAppBar(context,true),
       body: BackgroundWidget(
         child: SingleChildScrollView(
@@ -209,6 +211,12 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
       await AuthController.saveUserData(userModel);
       if (mounted) {
         showSnackBarMessage(context, 'Profile updated!');
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const MainBottomNavScreen(),
+          ),
+              (route) => false,
+        );
       }
     } else {
       if (mounted) {

@@ -26,6 +26,7 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: BackgroundWidget(
         child: SafeArea(
           child: SingleChildScrollView(
@@ -146,6 +147,7 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
   void _onTapVerifyOtpButton() {
     if(_formKey.currentState!.validate()){
       _pinVerification();
+     // _verifyOtp(_pinTEController.text);
     }
   }
 
@@ -160,7 +162,7 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
       Urls.recoverVerifyOTP( widget.email, _pinTEController.text),
     );
 
-    if (response.isSuccess) {
+    if (response.isSuccess && response.responseData['status'] == 'success') {
 
       if(mounted) {
         Navigator.push(
@@ -183,6 +185,37 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
       setState(() {});
     }
   }
+
+  // Future<void> _verifyOtp(String otp) async {
+  //   _pinVerificationInProgress = true;
+  //   if (mounted) {
+  //     setState(() {});
+  //   }
+  //   NetworkResponse response =
+  //   await NetworkCaller.getRequest(Urls.recoverVerifyOTP(widget.email, otp));
+  //   _pinVerificationInProgress = false;
+  //   if (mounted) {
+  //     setState(() {});
+  //   }
+  //   if (response.isSuccess && response.responseData['status'] == 'success') {
+  //     if (mounted) {
+  //       Navigator.push(
+  //         context,
+  //         MaterialPageRoute(
+  //           builder: (context) => ResetPasswordScreen(
+  //             email: widget.email,
+  //             otp: otp,
+  //           ),
+  //         ),
+  //       );
+  //     }
+  //   } else {
+  //     if (mounted) {
+  //       showSnackBarMessage(context,
+  //           response.errorMessage ?? 'Otp verification failed! Try again');
+  //     }
+  //   }
+  // }
 
   @override
   void dispose() {

@@ -23,6 +23,7 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: profileAppBar(context),
       body: BackgroundWidget(
         child: SafeArea(

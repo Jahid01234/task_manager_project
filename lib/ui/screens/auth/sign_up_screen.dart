@@ -30,6 +30,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: BackgroundWidget(
           child: SafeArea(
             child: SingleChildScrollView(

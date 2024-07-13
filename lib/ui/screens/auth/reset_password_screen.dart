@@ -36,6 +36,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: BackgroundWidget(
         child: SafeArea(
           child: SingleChildScrollView(
@@ -176,6 +177,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   void _onTapConfirmButton() {
     if(_formKey.currentState!.validate()){
       _resetPassword();
+     // _resetPassword(_passwordTEController.text);
     }
   }
 
@@ -213,14 +215,14 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       await AuthController.saveUserAccessToken(loginModel.token!);
 
       if (mounted) {
-        //showSnackBarMessage(context, "Password reset successful.");
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const SignInScreen(),
-          ),
-        );
-      }
+              showSnackBarMessage(
+                  context, response.errorMessage ?? 'Reset password! Try Login now.');
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const SignInScreen(),),
+                    (route) => false,
+              );
+            }
     } else {
       if (mounted) {
         showSnackBarMessage(
@@ -231,6 +233,42 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       }
     }
   }
+
+  // Future<void> _resetPassword(String password) async {
+  //   _resetPasswordInProgress = true;
+  //   if (mounted) {
+  //     setState(() {});
+  //   }
+  //
+  //   Map<String, dynamic> inputParams = {
+  //     "email": widget.email,
+  //     "OTP": widget.otp,
+  //     "password": password,
+  //   };
+  //
+  //   NetworkResponse response =
+  //   await NetworkCaller.postRequest(Urls.recoverResetPass, body: inputParams);
+  //   _resetPasswordInProgress = false;
+  //   if (mounted) {
+  //     setState(() {});
+  //   }
+  //   if (response.isSuccess) {
+  //     if (mounted) {
+  //       showSnackBarMessage(
+  //           context, response.errorMessage ?? 'Reset password! Try Login now.');
+  //       Navigator.pushAndRemoveUntil(
+  //         context,
+  //         MaterialPageRoute(builder: (context) => const SignInScreen()),
+  //             (route) => false,
+  //       );
+  //     }
+  //   } else {
+  //     if (mounted) {
+  //       showSnackBarMessage(context,
+  //           response.errorMessage ?? 'Reset password failed! Try again');
+  //     }
+  //   }
+  // }
 
   @override
   void dispose() {
